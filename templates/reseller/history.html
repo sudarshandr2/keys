@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h3 class="card-title mb-4">Transaction History</h3>
+
+        <form class="row g-3 mb-4" method="GET">
+            <div class="col-12 col-md-4">
+                <label for="dateFrom" class="form-label">From Date</label>
+                <input type="date" class="form-control" id="dateFrom" name="date_from"
+                       value="{{ request.args.get('date_from', '') }}">
+            </div>
+            <div class="col-12 col-md-4">
+                <label for="dateTo" class="form-label">To Date</label>
+                <input type="date" class="form-control" id="dateTo" name="date_to"
+                       value="{{ request.args.get('date_to', '') }}">
+            </div>
+            <div class="col-12 col-md-4">
+                <label for="duration" class="form-label">Duration</label>
+                <select class="form-select" id="duration" name="duration">
+                    <option value="">All Durations</option>
+                    <option value="day" {% if request.args.get('duration') == 'day' %}selected{% endif %}>Day</option>
+                    <option value="week" {% if request.args.get('duration') == 'week' %}selected{% endif %}>Week</option>
+                    <option value="month" {% if request.args.get('duration') == 'month' %}selected{% endif %}>Month</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary flex-grow-1">Filter</button>
+                    <a href="{{ url_for('reseller.history') }}" class="btn btn-secondary">Reset</a>
+                </div>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th class="d-none d-md-table-cell">License Key</th>
+                        <th>Duration</th>
+                        <th>Amount</th>
+                        <th class="d-none d-md-table-cell">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr>
+                        <td>
+                            {{ transaction.date }}
+                            <div class="d-md-none">
+                                <small class="text-muted">
+                                    Key: <span class="text-monospace">{{ transaction.key }}</span>
+                                    <button class="btn btn-sm btn-outline-secondary" 
+                                            onclick="navigator.clipboard.writeText('{{ transaction.key }}')">
+                                        Copy
+                                    </button>
+                                </small>
+                            </div>
+                        </td>
+                        <td class="d-none d-md-table-cell">
+                            <span class="text-monospace">{{ transaction.key }}</span>
+                            <button class="btn btn-sm btn-outline-secondary ms-2" 
+                                    onclick="navigator.clipboard.writeText('{{ transaction.key }}')">
+                                Copy
+                            </button>
+                        </td>
+                        <td>{{ transaction.duration }}</td>
+                        <td>${{ transaction.amount }}</td>
+                        <td class="d-none d-md-table-cell">
+                            <span class="badge {% if transaction.status == 'active' %}bg-success{% else %}bg-secondary{% endif %}">
+                                {{ transaction.status }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if not transactions %}
+        <div class="text-center py-4">
+            <p class="text-muted">No transactions found for the selected criteria.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

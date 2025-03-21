@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title mb-4">Generate License Key</h3>
+
+                <div class="alert alert-info">
+                    <h5 class="mb-0">Current Balance: ${{ "%.2f"|format(current_user.balance) }}</h5>
+                </div>
+
+                <form id="generateKeyForm" method="POST" action="{{ url_for('reseller.generate_key') }}">
+                    <div class="mb-4">
+                        <label for="hack" class="form-label">Select Hack</label>
+                        <select class="form-select" id="hack" name="hack_id" required>
+                            <option value="" selected disabled>Choose hack...</option>
+                            {% for hack in hacks %}
+                            <option value="{{ hack.id }}">{{ hack.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="duration" class="form-label">Select Duration</label>
+                        <select class="form-select" id="duration" name="duration" required>
+                            <option value="" selected disabled>Choose duration...</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="customer" class="form-label">Customer Reference (Optional)</label>
+                        <input type="text" class="form-control" id="customer" name="customer" 
+                               placeholder="Enter customer name or reference">
+                    </div>
+
+                    <div class="alert alert-secondary mb-4" id="pricePreview" style="display: none;">
+                        Selected price: $<span id="selectedPrice">0.00</span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100" id="generateBtn">
+                        Generate Key
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        {% if generated_key %}
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title text-success mb-3">Key Generated Successfully!</h5>
+                <div class="input-group">
+                    <input type="text" class="form-control" value="{{ generated_key }}" readonly>
+                    <button class="btn btn-outline-secondary" type="button" 
+                            onclick="navigator.clipboard.writeText('{{ generated_key }}')">
+                        Copy
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+// Store hack prices for client-side use
+const hackPrices = {
+    {% for hack in hacks %}
+    '{{ hack.id }}': {
+        {% for price in hack.prices %}
+        '{{ price.duration }}': {{ price.price }},
+        {% endfor %}
+    },
+    {% endfor %}
+};
+
+document.getElementById('hack').addEventListener('change', function() {
+    const hackId = this.value;
+    const durationSelect = document.getElementById('duration');
+    const prices = hackPrices[hackId];
+
+    // Clear existing options
+    durationSelect.innerHTML = '<option value="" selected disabled>Choose duration...</option>';
+
+    if (prices) {
+        // Add new options with prices
+        Object.entries(prices).forEach(([duration, price]) => {
+            const option = document.createElement('option');
+            option.value = duration;
+            option.textContent = `${duration.charAt(0).toUpperCase() + duration.slice(1)} - $${price.toFixed(2)}`;
+            option.setAttribute('data-price', price);
+            durationSelect.appendChild(option);
+        });
+    }
+});
+
+document.getElementById('duration').addEventListener('change', function() {
+    const selected = this.options[this.selectedIndex];
+    const price = selected.getAttribute('data-price');
+    document.getElementById('selectedPrice').textContent = parseFloat(price).toFixed(2);
+    document.getElementById('pricePreview').style.display = 'block';
+});
+
+document.getElementById('generateKeyForm').addEventListener('submit', function(e) {
+    const price = parseFloat(document.getElementById('selectedPrice').textContent);
+    const balance = {{ current_user.balance }};
+
+    if (price > balance) {
+        e.preventDefault();
+        alert('Insufficient balance for this purchase');
+    }
+});
+</script>
+{% endblock %}

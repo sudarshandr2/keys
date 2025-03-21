@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>License Key Management</title>
+    <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary-color: #6c757d;
+            --accent-color: #06b6d4;
+            --bg-dark: #111827;
+            --bg-card: #1e293b;
+            --text-primary: #f3f4f6;
+            --text-secondary: #d1d5db;
+            --border-radius: 12px;
+            --transition: all 0.25s ease;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #0f172a 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(30, 41, 59, 0.8) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: var(--transition);
+        }
+        
+        .navbar-brand:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            color: var(--text-secondary) !important;
+            margin: 0 0.2rem;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: var(--text-primary) !important;
+            background: rgba(79, 70, 229, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: var(--transition);
+            transform: translateX(-50%);
+            opacity: 0;
+        }
+        
+        .nav-link:hover::after {
+            width: 30px;
+            opacity: 1;
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transition: var(--transition);
+            margin-bottom: 1.5rem;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+        }
+        
+        .card-header {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .btn {
+            padding: 0.6rem 1.2rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: var(--transition);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            letter-spacing: 0.01em;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), #4338ca);
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-hover), var(--primary-color));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .table {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin-bottom: 0;
+        }
+        
+        .table th {
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            color: var(--accent-color);
+        }
+        
+        .table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: middle;
+        }
+        
+        .table tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+        
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .alert {
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            padding: 1rem 1.5rem;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+        }
+        
+        .alert::before {
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+        
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+        
+        .alert-success::before {
+            content: "\f058";
+        }
+        
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+        
+        .alert-danger::before {
+            content: "\f057";
+        }
+        
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+        
+        .alert-warning::before {
+            content: "\f071";
+        }
+        
+        .alert-info {
+            background: rgba(6, 182, 212, 0.1);
+            color: #06b6d4;
+        }
+        
+        .alert-info::before {
+            content: "\f05a";
+        }
+        
+        /* Subtle glow effects */
+        .glow-container {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .glow-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(79, 70, 229, 0.03) 0%, transparent 70%);
+            z-index: -1;
+        }
+        
+        /* Animation keyframes */
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+        
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 160px;
+        }
+        
+        .stat-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        
+        .stat-card .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            background: linear-gradient(90deg, var(--text-primary), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-card .stat-icon {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            font-size: 1.75rem;
+            opacity: 0.25;
+            color: var(--accent-color);
+        }
+        
+        .stat-card .trend {
+            display: flex;
+            align-items: center;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .trend.up {
+            color: #10b981;
+        }
+        
+        .trend.down {
+            color: #ef4444;
+        }
+        
+        .trend i {
+            margin-right: 0.25rem;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .navbar-nav {
+                padding: 1rem 0;
+            }
+            
+            .nav-link {
+                padding: 0.8rem 1rem;
+                margin: 0.3rem 0;
+            }
+            
+            .nav-link::after {
+                bottom: 8px;
+            }
+            
+            .table-responsive {
+                border-radius: var(--border-radius);
+            }
+            
+            .stat-card {
+                min-height: 140px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('auth.index') }}">
+                <i class="fas fa-key me-2"></i>License Manager
+            </a>
+            {% if current_user.is_authenticated %}
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    {% if current_user.role == 'admin' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.dashboard') }}">
+                            <i class="fas fa-chart-line me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.hacks') }}">
+                            <i class="fas fa-code me-1"></i> Hacks
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.resellers') }}">
+                            <i class="fas fa-users me-1"></i> Resellers
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.keys') }}">
+                            <i class="fas fa-key me-1"></i> Keys
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('reseller.dashboard') }}">
+                            <i class="fas fa-chart-line me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('reseller.generate') }}">
+                            <i class="fas fa-plus-circle me-1"></i> Generate Keys
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('reseller.history') }}">
+                            <i class="fas fa-history me-1"></i> History
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i> {{ current_user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="container glow-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} mb-4">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Example of content that could appear in the block -->
+        {% block content %}
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <i class="fas fa-key stat-icon"></i>
+                    <h3>Total Keys</h3>
+                    <div class="stat-value">1,245</div>
+                    <div class="trend up">
+                        <i class="fas fa-arrow-up"></i> 12% from last month
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <i class="fas fa-users stat-icon"></i>
+                    <h3>Active Resellers</h3>
+                    <div class="stat-value">37</div>
+                    <div class="trend up">
+                        <i class="fas fa-arrow-up"></i> 5% from last month
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <i class="fas fa-download stat-icon"></i>
+                    <h3>Downloads</h3>
+                    <div class="stat-value">8,942</div>
+                    <div class="trend up">
+                        <i class="fas fa-arrow-up"></i> 18% from last month
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <i class="fas fa-chart-line stat-icon"></i>
+                    <h3>Revenue</h3>
+                    <div class="stat-value">$32.5k</div>
+                    <div class="trend up">
+                        <i class="fas fa-arrow-up"></i> 7% from last month
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Recent License Keys</h5>
+                        <a href="#" class="btn btn-sm btn-primary">View All</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Key</th>
+                                        <th>Product</th>
+                                        <th>Reseller</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="text-primary">XXXX-XXXX-XXXX-1234</span></td>
+                                        <td>Pro License</td>
+                                        <td>John Smith</td>
+                                        <td><span class="badge bg-success">Active</span></td>
+                                        <td>Mar 20, 2025</td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <button class="btn btn-outline-primary"><i class="fas fa-edit"></i></button>
+                                                <button class="btn btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="text-primary">XXXX-XXXX-XXXX-5678</span></td>
+                                        <td>Enterprise License</td>
+                                        <td>Sarah Johnson</td>
+                                        <td><span class="badge bg-warning">Pending</span></td>
+                                        <td>Mar 19, 2025</td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <button class="btn btn-outline-primary"><i class="fas fa-edit"></i></button>
+                                                <button class="btn btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="text-primary">XXXX-XXXX-XXXX-9012</span></td>
+                                        <td>Basic License</td>
+                                        <td>Mike Davis</td>
+                                        <td><span class="badge bg-danger">Expired</span></td>
+                                        <td>Mar 15, 2025</td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <button class="btn btn-outline-primary"><i class="fas fa-edit"></i></button>
+                                                <button class="btn btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="#" class="btn btn-primary">
+                                <i class="fas fa-plus-circle me-2"></i>Generate New Key
+                            </a>
+                            <a href="#" class="btn btn-secondary">
+                                <i class="fas fa-file-export me-2"></i>Export Reports
+                            </a>
+                            <a href="#" class="btn btn-secondary">
+                                <i class="fas fa-user-plus me-2"></i>Add New Reseller
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Activity Log</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item bg-transparent">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-key text-primary"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <p class="mb-0">New key generated by <span class="text-primary">John Smith</span></p>
+                                        <small class="text-muted">10 minutes ago</small>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item bg-transparent">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-plus text-success"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <p class="mb-0">New reseller <span class="text-primary">Mike Davis</span> added</p>
+                                        <small class="text-muted">2 hours ago</small>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item bg-transparent">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-edit text-warning"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <p class="mb-0">License plan updated by <span class="text-primary">Admin</span></p>
+                                        <small class="text-muted">Yesterday</small>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        // Enhanced dropdown interaction
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effect to dropdown
+            const dropdownToggle = document.querySelector('.dropdown-toggle');
+            const dropdownMenu = document.querySelector('.dropdown-menu');
+            
+            if (dropdownToggle && dropdownMenu) {
+                dropdownToggle.addEventListener('mouseenter', function() {
+                    dropdownMenu.classList.add('show');
+                });
+                
+                const dropdownParent = dropdownToggle.parentElement;
+                dropdownParent.addEventListener('mouseleave', function() {
+                    dropdownMenu.classList.remove('show');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

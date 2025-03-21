@@ -1,0 +1,26 @@
+[
+  {
+    "id": "c081b915-7ebc-4809-9f4b-ff44183c897c",
+    "key": "12adad",
+    "duration": "day",
+    "status": "sold",
+    "created_at": "2025-03-20T10:55:06.972488",
+    "reseller_id": "3fd3e8a2-e709-4c02-b2a1-b1bcf61fac83",
+    "customer_ref": "",
+    "sold_at": "2025-03-20T11:01:13.159683"
+  },
+  {
+    "id": "959e6454-b96a-47c0-9fd4-02c8658f21cd",
+    "key": "adadad",
+    "duration": "day",
+    "status": "available",
+    "created_at": "2025-03-20T10:55:06.972856"
+  },
+  {
+    "id": "85b87664-1698-4831-9b3d-8d32a71e5d5d",
+    "key": "dadadad",
+    "duration": "day",
+    "status": "available",
+    "created_at": "2025-03-20T10:55:06.973076"
+  }
+]

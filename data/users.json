@@ -1,0 +1,18 @@
+[
+  {
+    "id": "c838853d-99c5-4fc1-ba08-742d36633de4",
+    "username": "admin",
+    "password_hash": "scrypt:32768:8:1$OmSmVh8jtuyh8tFH$b2f181cb9dca913fd4a91466e2a73211690710629c58ae8893ab2c7912c15e1b126d5eea01cae59ec186025d652a4a10f771f73f3699252bb04d69fbc454a3c5",
+    "role": "admin",
+    "balance": 0,
+    "created_at": "2025-03-20T10:39:50.946947"
+  },
+  {
+    "id": "3fd3e8a2-e709-4c02-b2a1-b1bcf61fac83",
+    "username": "test",
+    "password_hash": "scrypt:32768:8:1$wBuD6j9n0g4Qf9xk$ee65149c301a0bc78db3fdab505d30d63fe2e963411773a097160484ddb97b9f1da680192e82d5d19758206ef3cac50c08a58b550d41487aa978c1e7412ba823",
+    "role": "reseller",
+    "balance": 48.0,
+    "created_at": "2025-03-20T10:47:17.069306"
+  }
+]

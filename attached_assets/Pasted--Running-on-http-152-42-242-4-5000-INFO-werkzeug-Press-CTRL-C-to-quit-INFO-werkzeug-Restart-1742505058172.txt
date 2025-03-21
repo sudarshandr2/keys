@@ -1,0 +1,39 @@
+ * Running on http://152.42.242.4:5000
+INFO:werkzeug:Press CTRL+C to quit
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 136-444-170
+INFO:werkzeug:49.36.107.170 - - [20/Mar/2025 21:10:06] "GET / HTTP/1.1" 302 -
+INFO:werkzeug:49.36.107.170 - - [20/Mar/2025 21:10:06] "GET /login HTTP/1.1" 200 -
+INFO:werkzeug:49.36.107.170 - - [20/Mar/2025 21:10:06] "GET /static/js/main.js HTTP/1.1" 200 -
+INFO:werkzeug:49.36.107.170 - - [20/Mar/2025 21:10:08] "GET /favicon.ico HTTP/1.1" 404 -
+INFO:werkzeug:49.36.107.170 - - [20/Mar/2025 21:10:26] "POST /login HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "/root/reseller/venv/lib/python3.12/site-packages/flask/app.py", line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/reseller/venv/lib/python3.12/site-packages/flask/app.py", line 1514, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/reseller/venv/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/reseller/venv/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/reseller/venv/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/reseller/venv/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/reseller/auth.py", line 17, in login
+    login_user(user)
+  File "/root/reseller/venv/lib/python3.12/site-packages/flask_login/utils.py", line 184, in login_user
+    session["_user_id"] = user_id
+  File "/root/reseller/venv/lib/python3.12/site-packages/flask/sessions.py", line 104, in _fail
+    raise RuntimeError(
+RuntimeError: The session is unavailable because no secret key was set.  Set the secret_key on the application to something unique and secret.
+INFO:werkzeug:49.36.107.170 - - [20/Mar/2025 21:10:26] "GET /login?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+INFO:werkzeug:49.36.107.170 - - [20/Mar/2025 21:10:26] "GET /login?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+INFO:werkzeug:49.36.107.170 - - [20/Mar/2025 21:10:27] "GET /login?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -

@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
+    <h2 class="mb-3 mb-md-0">Manage Resellers</h2>
+    <button type="button" class="btn btn-primary w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#addResellerModal">
+        Add Reseller
+    </button>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Balance</th>
+                        <th class="d-none d-md-table-cell">Created</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reseller in resellers %}
+                    <tr>
+                        <td>{{ reseller.username }}</td>
+                        <td>${{ reseller.balance }}</td>
+                        <td class="d-none d-md-table-cell">{{ reseller.created_at }}</td>
+                        <td>
+                            <span class="badge {% if reseller.active %}bg-success{% else %}bg-danger{% endif %}">
+                                {{ 'Active' if reseller.active else 'Locked' }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-info" data-bs-toggle="modal" 
+                                        data-bs-target="#addBalanceModal" 
+                                        data-reseller-id="{{ reseller.id }}"
+                                        data-reseller-balance="{{ reseller.balance }}">
+                                    Update Balance
+                                </button>
+                                <form method="POST" action="{{ url_for('admin.lock_reseller', reseller_id=reseller.id) }}" style="display: inline;">
+                                    <button type="submit" class="btn btn-warning btn-sm">{{ 'Unlock' if not reseller.active else 'Lock' }}</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Reseller Modal -->
+<div class="modal fade" id="addResellerModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Reseller</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('admin.add_reseller') }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="initial_balance" class="form-label">Initial Balance ($)</label>
+                        <input type="number" class="form-control" id="initial_balance" name="initial_balance" 
+                               step="0.01" min="0" value="0" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Reseller</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Balance Modal -->
+<div class="modal fade" id="addBalanceModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Balance</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('admin.add_balance') }}" method="POST">
+                <div class="modal-body">
+                    <input type="hidden" id="resellerId" name="reseller_id">
+                    <div class="mb-3">
+                        <label for="currentBalance" class="form-label">Current Balance</label>
+                        <input type="text" class="form-control" id="currentBalance" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">New Balance ($)</label>
+                        <input type="number" class="form-control" id="amount" name="amount" 
+                               step="0.01" min="0" required>
+                        <small class="form-text text-muted">Enter the new total balance amount</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Balance</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var addBalanceModal = document.getElementById('addBalanceModal')
+    if (addBalanceModal) {
+        addBalanceModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+            var resellerId = button.getAttribute('data-reseller-id')
+            var currentBalance = button.getAttribute('data-reseller-balance')
+
+            var modal = this
+            modal.querySelector('#resellerId').value = resellerId
+            modal.querySelector('#currentBalance').value = '$' + currentBalance
+            modal.querySelector('#amount').value = currentBalance
+        })
+    }
+});
+</script>
+{% endblock %}

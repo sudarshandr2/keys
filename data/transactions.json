@@ -1,0 +1,19 @@
+[
+  {
+    "id": "3c17499d-d6f7-4632-97be-f9c8d350938e",
+    "reseller_id": "3fd3e8a2-e709-4c02-b2a1-b1bcf61fac83",
+    "type": "balance_update",
+    "amount": 50.0,
+    "created_at": "2025-03-20T10:55:35.719975"
+  },
+  {
+    "id": "b6d4e913-bf6e-4b87-9ff5-8aad8bc2c8fa",
+    "reseller_id": "3fd3e8a2-e709-4c02-b2a1-b1bcf61fac83",
+    "type": "key_purchase",
+    "key": "12adad",
+    "duration": "day",
+    "amount": 2.0,
+    "customer_ref": "",
+    "created_at": "2025-03-20T11:01:13.160272"
+  }
+]

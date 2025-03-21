@@ -1,0 +1,80 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Reseller Dashboard</h2>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Your Balance</h5>
+                    <h2>${{ "%.2f"|format(current_user.balance) }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Monthly Keys Sold</h5>
+                    <h2>{{ monthly_keys }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="card-title">Recent Transactions</h5>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Key</th>
+                            <th>Duration</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaction, key in recent_transactions %}
+                        <tr>
+                            <td>{{ transaction.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ transaction.type }}</td>
+                            <td>${{ "%.2f"|format(transaction.amount) }}</td>
+                            <td>
+                                {% if key %}
+                                <div class="input-group">
+                                    <input type="text" class="form-control" value="{{ key.key }}" readonly>
+                                    <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard(this)" data-key="{{ key.key }}">
+                                        Copy
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                            <td>{% if key %}{{ key.duration }}{% endif %}</td>
+                            <td>{% if key %}{{ key.status }}{% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyToClipboard(button) {
+    const key = button.getAttribute('data-key');
+    navigator.clipboard.writeText(key).then(() => {
+        button.textContent = 'Copied!';
+        setTimeout(() => {
+            button.textContent = 'Copy';
+        }, 2000);
+    });
+}
+</script>
+{% endblock %}

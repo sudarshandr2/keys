@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
+    <h2 class="mb-3 mb-md-0">Manage Hacks</h2>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addHackModal">
+        Add New Hack
+    </button>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Pricing</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for hack in hacks %}
+                    <tr>
+                        <td>{{ hack.name }}</td>
+                        <td>{{ hack.description }}</td>
+                        <td>
+                            {% for price in hack.prices %}
+                            <div>{{ price.duration }}: ${{ "%.2f"|format(price.price) }}</div>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            <span class="badge {% if hack.active %}bg-success{% else %}bg-danger{% endif %}">
+                                {{ 'Active' if hack.active else 'Inactive' }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-info" data-bs-toggle="modal" 
+                                        data-bs-target="#editHackModal"
+                                        data-hack-id="{{ hack.id }}"
+                                        data-hack-name="{{ hack.name }}"
+                                        data-hack-description="{{ hack.description }}">
+                                    Edit
+                                </button>
+                                <button class="btn btn-warning" data-bs-toggle="modal"
+                                        data-bs-target="#priceModal"
+                                        data-hack-id="{{ hack.id }}"
+                                        data-hack-name="{{ hack.name }}">
+                                    Prices
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Hack Modal -->
+<div class="modal fade" id="addHackModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Hack</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('admin.add_hack') }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="pricing-section">
+                        <h6 class="mb-3">Initial Pricing</h6>
+                        <div class="mb-3">
+                            <label for="day_price" class="form-label">Day Price ($)</label>
+                            <input type="number" class="form-control" id="day_price" name="day_price" 
+                                   step="0.01" min="0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="week_price" class="form-label">Week Price ($)</label>
+                            <input type="number" class="form-control" id="week_price" name="week_price" 
+                                   step="0.01" min="0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="month_price" class="form-label">Month Price ($)</label>
+                            <input type="number" class="form-control" id="month_price" name="month_price" 
+                                   step="0.01" min="0" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Hack</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Hack Modal -->
+<div class="modal fade" id="editHackModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Hack</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('admin.edit_hack') }}" method="POST">
+                <input type="hidden" id="editHackId" name="hack_id">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="editName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="editName" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="editDescription" name="description" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Hack</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Pricing Modal -->
+<div class="modal fade" id="priceModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Pricing</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('admin.update_prices') }}" method="POST">
+                <input type="hidden" id="priceHackId" name="hack_id">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="updateDayPrice" class="form-label">Day Price ($)</label>
+                        <input type="number" class="form-control" id="updateDayPrice" name="day_price" 
+                               step="0.01" min="0" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateWeekPrice" class="form-label">Week Price ($)</label>
+                        <input type="number" class="form-control" id="updateWeekPrice" name="week_price" 
+                               step="0.01" min="0" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateMonthPrice" class="form-label">Month Price ($)</label>
+                        <input type="number" class="form-control" id="updateMonthPrice" name="month_price" 
+                               step="0.01" min="0" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Prices</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Edit Hack Modal
+    var editHackModal = document.getElementById('editHackModal')
+    if (editHackModal) {
+        editHackModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+            var hackId = button.getAttribute('data-hack-id')
+            var hackName = button.getAttribute('data-hack-name')
+            var hackDescription = button.getAttribute('data-hack-description')
+
+            var modal = this
+            modal.querySelector('#editHackId').value = hackId
+            modal.querySelector('#editName').value = hackName
+            modal.querySelector('#editDescription').value = hackDescription
+        })
+    }
+
+    // Price Modal
+    var priceModal = document.getElementById('priceModal')
+    if (priceModal) {
+        priceModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+            var hackId = button.getAttribute('data-hack-id')
+            var hackName = button.getAttribute('data-hack-name')
+
+            var modal = this
+            modal.querySelector('#priceHackId').value = hackId
+            modal.querySelector('.modal-title').textContent = 'Update Pricing for ' + hackName
+        })
+    }
+})
+</script>
+{% endblock %}
